@@ -1,9 +1,8 @@
 name: Probot Workflow
-
+on:
  schedule:
-  - cron: "*/2 * * * *"
-    task: npx probot run ./index.js
-
+  - cron: "*/1 * * * *"
+    
 jobs:
   probot:
     runs-on: ubuntu-latest
@@ -26,4 +25,6 @@ jobs:
           else
           npm i
           fi
+      - name: Run Probot
+        run: npx probot run ./index.js
 
