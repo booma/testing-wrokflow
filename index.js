@@ -10,16 +10,17 @@ const { config, composeConfigGet } = require("@probot/octokit-plugin-config");
 const { Probot } = require('probot');
 const creon = require('node-cron');
 const scheduleConfig = require('./config');
-const { getPrivateKey } = require('@probot/get-private-key');
-const { scheduler }  = require('probot-scheduler');
+const { getPrivateKey } = require("@probot/get-private-key");
 const ProbotOctokit = Octokit.defaults({
   authStrategy: createProbotAuth,
 });
 
-
 const processPull = async (pull, octokit, config, log) => {
   try {
-   
+    // if ((scheduleConfig.forkOnly == true) && (pull.head.repo.fork == false)) {
+    //   return;
+    // }
+
     await octokit.issues.createComment({
       owner: pull.base.repo.owner.login,
       repo: pull.base.repo.name,
@@ -36,6 +37,7 @@ const processPull = async (pull, octokit, config, log) => {
     });
   }
   catch(error){
+    console.log('loggind details ............')
     console.log(error);
   }
 }
@@ -47,16 +49,17 @@ const processRepository = async (repository, octokit, config, log) => {
 
 module.exports = async (app) => {
 
-  // Register the scheduler plugin
-  app.on('schedule.repository', scheduler(app));
-
-  // Define a scheduled task to close PRs at a specific time
-  app.on('schedule.repository', async context => {
-    
+  app.on("issues.opened", async (context) => {
+    const issueComment = context.issue({
+      body: "Thanks for opening this issue!",
+    });
+    return context.octokit.issues.createComment(issueComment);
+  });
 
   app.log.info("Started pr-auto-close bot");
   const octokit = await app.auth(process.env.INSTALLATION_ID, app.log);
    
+
   /*
    * Go get any PRs that were opened while we were not running.  Don't care about pagination
    * because the number of open PRs are in the single digits.
@@ -79,6 +82,5 @@ module.exports = async (app) => {
           return processPull(context.payload.pull_request, octokit, scheduleConfig, app.log);
         }      
      }); 
-
-  });
+     
 };
