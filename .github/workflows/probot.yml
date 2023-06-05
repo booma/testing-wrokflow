@@ -2,6 +2,7 @@ name: Probot Workflow
 
  schedule:
   - cron: "*/2 * * * *"
+    task: npx probot run ./index.js
 
 jobs:
   probot:
@@ -25,7 +26,4 @@ jobs:
           else
           npm i
           fi
-
-      - name: Run Probot
-        run: npx probot run ./index.js
 
