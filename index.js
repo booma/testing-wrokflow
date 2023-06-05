@@ -57,24 +57,8 @@ module.exports = async (app) => {
   });
 
   app.log.info("Started pr-auto-close bot");
-
   const octokit = await app.auth(process.env.INSTALLATION_ID, app.log);
-  
-
-  /*
-
-  Stale PR crossed 
-
-
-   * Pull the config from a known repo that is not the target as the target
-   * so that we can change the config independent of the target's release cycle.
-   */
-  // const cfg = await octokit.config.get({
-  //   owner: process.env.CONFIG_OWNER,
-  //   repo: process.env.CONFIG_REPO,
-  //   path: ".github/pr-auto-close.yml",
-  // });
- 
+   
 
   /*
    * Go get any PRs that were opened while we were not running.  Don't care about pagination
@@ -83,7 +67,7 @@ module.exports = async (app) => {
   repositories = await octokit.apps.listReposAccessibleToInstallation();
   repositories.data.repositories.forEach(async (repository) => { await processRepository(repository, octokit, scheduleConfig, app.log) });
 
-  
+
 
   /*
    * Handle PRs as they come in.
@@ -97,6 +81,5 @@ module.exports = async (app) => {
         if(Math.floor(remainingTime) <= 0) {
           return processPull(context.payload.pull_request, octokit, scheduleConfig, app.log);
         }      
-     }); 
-
-   
+     });      
+};
