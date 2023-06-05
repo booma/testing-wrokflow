@@ -28,8 +28,7 @@ const processPull = async (pull, octokit, config, log) => {
       body: config.closureComment,
     });
 
-
-    return await octokit.pulls.update({
+   return await octokit.pulls.update({
       owner: pull.base.repo.owner.login,
       repo: pull.base.repo.name,
       pull_number: pull.number,
@@ -59,16 +58,13 @@ module.exports = async (app) => {
   app.log.info("Started pr-auto-close bot");
   const octokit = await app.auth(process.env.INSTALLATION_ID, app.log);
    
-
   /*
    * Go get any PRs that were opened while we were not running.  Don't care about pagination
    * because the number of open PRs are in the single digits.
    */
   repositories = await octokit.apps.listReposAccessibleToInstallation();
   repositories.data.repositories.forEach(async (repository) => { await processRepository(repository, octokit, scheduleConfig, app.log) });
-
-
-
+  
   /*
    * Handle PRs as they come in.
    */
