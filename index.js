@@ -11,7 +11,7 @@ const { Probot } = require('probot');
 const creon = require('node-cron');
 const scheduleConfig = require('./config');
 const { getPrivateKey } = require('@probot/get-private-key');
-const {scheduler}  = require('probot-scheduler');
+const { scheduler }  = require('probot-scheduler');
 const ProbotOctokit = Octokit.defaults({
   authStrategy: createProbotAuth,
 });
@@ -79,5 +79,6 @@ module.exports = async (app) => {
           return processPull(context.payload.pull_request, octokit, scheduleConfig, app.log);
         }      
      }); 
+
   });
 };
