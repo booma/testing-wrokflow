@@ -1,6 +1,5 @@
 name: Probot Workflow
 
-on:
  schedule:
   - cron: "*/2 * * * *"
 
